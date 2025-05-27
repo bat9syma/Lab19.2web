@@ -11,7 +11,7 @@ $x_end = isset($_POST['x_end']) ? (float)$_POST['x_end'] : 0;
 $y_input = isset($_POST['y']) ? (float)$_POST['y'] : 0;
 $z_input = isset($_POST['z']) ? (float)$_POST['z'] : 0;
 
-// Зчитування кроку з файлу config/x_step.txt
+// Зчитування кроку з файлу 
 $configPath = __DIR__ . '/../config/x_step.txt';
 $x_step = 1.0; // значення за замовчуванням
 if (file_exists($configPath)) {
@@ -22,14 +22,12 @@ if (file_exists($configPath)) {
     }
 }
 
-// Обчислення Y та Z з урахуванням варіанту
 $y = $y_input * $variant;
 $z = $z_input / $variant;
 
 // Отримуємо тимчасову папку PHP
 $tempDir = sys_get_temp_dir();
 
-// Формуємо повний шлях до файлу в тимчасовій папці
 $filepath = $tempDir . DIRECTORY_SEPARATOR . "symovych.txt";
 
 // Відкриваємо файл для запису
@@ -62,5 +60,5 @@ if (file_exists($filepath)) {
     echo "Помилка: файл не знайдено після запису :(";
 }
 
-echo "<a href='symovych.txt' download>   Завантажити файл</a>";
+echo "<a href='symovych.txt' download>         Завантажити файл</a>";
 exit;
