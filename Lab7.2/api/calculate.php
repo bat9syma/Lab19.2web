@@ -1,32 +1,40 @@
 <?php
 session_start();
-require_once __DIR__ . '/../includes/fun.php';
+require_once __DIR__ . '/../includes/fun.php';  
 
-$lastname = $_POST['lastname'];
-$firstname = $_POST['firstname'];
-$group = $_POST['group'];
-$variant = (int)$_POST['variant'];
-$x_start = (float)$_POST['x_start'];
-$x_end = (float)$_POST['x_end'];
+// Забираємо дані з форми
+$lastname = $_POST['lastname'] ?? '';
+$firstname = $_POST['firstname'] ?? '';
+$group = $_POST['group'] ?? '';
+$variant = isset($_POST['variant']) ? (int)$_POST['variant'] : 1;
+$x_start = isset($_POST['x_start']) ? (float)$_POST['x_start'] : 0.0;
+$x_end = isset($_POST['x_end']) ? (float)$_POST['x_end'] : 0.0;
+$y_input = isset($_POST['y']) ? (float)$_POST['y'] : 0.0;
+$z_input = isset($_POST['z']) ? (float)$_POST['z'] : 0.0;
 
-// Зчитування кроку
-$config = file_get_contents(__DIR__ . '/../config/x_step.txt');
-preg_match('/x_step\s*=\s*([\d.]+)/', $config, $matches);
-$x_step = isset($matches[1]) ? (float)$matches[1] : 1.0;
+// Зчитуємо x_step 
+$configPath = __DIR__ . '/../config/x_step.txt';
+$x_step = 1.0; // дефолт
+if (file_exists($configPath)) {
+    $config = file_get_contents($configPath);
+    if (preg_match('/x_step\s*=\s*([\d\.]+)/', $config, $matches)) {
+        $x_step = (float)$matches[1];
+    }
+}
 
-$y = $_POST['y'] * $variant;
-$z = $_POST['z'] / $variant;
+$y = $y_input * $variant;
+$z = $z_input / $variant;
 
-// Шлях до файлу 
 $filePath = '/tmp/symovych.txt';
-$file = fopen($filePath, 'w');
 
+// Відкриваємо файл для запису
+$file = fopen($filePath, 'w');
 if (!$file) {
-    echo "Cannot open file for writing at: $filePath";
+    echo "Помилка: не вдалось відкрити файл для запису!";
     exit;
 }
 
-// Запис у файл
+// Записуємо дані у файл
 fwrite($file, "Full name: $lastname $firstname\n");
 fwrite($file, "Group: $group\n");
 fwrite($file, "Variant: $variant\n");
@@ -41,5 +49,6 @@ for ($x = $x_start; $x <= $x_end; $x += $x_step) {
 }
 
 fclose($file);
-echo "Файл успішно записано :)";
-exit;
+
+echo "Файл успішно записано :)<br>";
+echo "<a href='/results.php'>Переглянути файл результату</a>";
