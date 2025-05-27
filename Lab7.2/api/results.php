@@ -1,3 +1,4 @@
+<?php
 $filePath = dirname(__DIR__) . '/data/symovych.txt';
 
 if (file_exists($filePath)) {
@@ -5,3 +6,4 @@ if (file_exists($filePath)) {
 } else {
     echo "Results file not found :(";
 }
+?>
