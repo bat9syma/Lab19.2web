@@ -1,31 +1,45 @@
 <?php
 session_start();
-
 require_once __DIR__ . '/../includes/fun.php';
 
-$lastname = $_POST['lastname'];
-$firstname = $_POST['firstname'];
-$group = $_POST['group'];
-$variant = (int)$_POST['variant'];
-$x_start = (float)$_POST['x_start'];
-$x_end = (float)$_POST['x_end'];
+$lastname = $_POST['lastname'] ?? '';
+$firstname = $_POST['firstname'] ?? '';
+$group = $_POST['group'] ?? '';
+$variant = isset($_POST['variant']) ? (int)$_POST['variant'] : 1;
+$x_start = isset($_POST['x_start']) ? (float)$_POST['x_start'] : 0;
+$x_end = isset($_POST['x_end']) ? (float)$_POST['x_end'] : 0;
+$y_input = isset($_POST['y']) ? (float)$_POST['y'] : 0;
+$z_input = isset($_POST['z']) ? (float)$_POST['z'] : 0;
 
-// Зчитування кроку
-$config = file_get_contents(__DIR__ . '/../config/x_step.txt');
-preg_match('/x_step\s*=\s*([\d.]+)/', $config, $matches);
-$x_step = isset($matches[1]) ? (float)$matches[1] : 1.0;
-
-$y = $_POST['y'] * $variant;
-$z = $_POST['z'] / $variant;
-
-// Запис у тимчасовий файл
-$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "symovych.txt";
-$file = fopen($tmpFile, "w");
-
-if ($file === false) {
-    die("Cannot open file for writing at: $tmpFile");
+// Зчитування кроку з файлу config/x_step.txt
+$configPath = __DIR__ . '/../config/x_step.txt';
+$x_step = 1.0; // значення за замовчуванням
+if (file_exists($configPath)) {
+    $config = file_get_contents($configPath);
+    preg_match('/x_step\s*=\s*([\d.]+)/', $config, $matches);
+    if (isset($matches[1])) {
+        $x_step = (float)$matches[1];
+    }
 }
 
+// Обчислення Y та Z з урахуванням варіанту
+$y = $y_input * $variant;
+$z = $z_input / $variant;
+
+// Отримуємо тимчасову папку PHP
+$tempDir = sys_get_temp_dir();
+echo "Temp dir used by PHP: $tempDir<br>";
+
+// Формуємо повний шлях до файлу в тимчасовій папці
+$filepath = $tempDir . DIRECTORY_SEPARATOR . "symovych.txt";
+
+// Відкриваємо файл для запису
+$file = fopen($filepath, "w");
+if (!$file) {
+    die("Помилка: не вдалося відкрити файл для запису: $filepath");
+}
+
+// Записуємо дані у файл
 fwrite($file, "Full name: $lastname $firstname\n");
 fwrite($file, "Group: $group\n");
 fwrite($file, "Variant: $variant\n");
@@ -34,7 +48,7 @@ fwrite($file, "X_step = $x_step\n");
 fwrite($file, "\nX\tf(x,y,z)\n");
 fwrite($file, "-------------------\n");
 
-// Табуляція
+// Табуляція функції на проміжку з кроком
 for ($x = $x_start; $x <= $x_end; $x += $x_step) {
     $f = calculateExpression($x, $y, $z);
     fwrite($file, "$x\t" . round($f, 4) . "\n");
@@ -42,5 +56,11 @@ for ($x = $x_start; $x <= $x_end; $x += $x_step) {
 
 fclose($file);
 
-echo "Файл успішно записано у тимчасову папку: $tmpFile";
+// Перевірка, чи файл існує після запису
+if (file_exists($filepath)) {
+    echo "Файл успішно записано у тимчасову папку: $filepath";
+} else {
+    echo "Помилка: файл не знайдено після запису :(";
+}
+
 exit;
