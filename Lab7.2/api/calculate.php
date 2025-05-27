@@ -51,4 +51,5 @@ for ($x = $x_start; $x <= $x_end; $x += $x_step) {
 fclose($file);
 
 echo "Файл успішно записано :)<br>";
-echo "<a href='/results.php'>Переглянути файл результату</a>";
+echo "<a href='/results.php' target='_blank'>Переглянути файл результату!</a>";
+
