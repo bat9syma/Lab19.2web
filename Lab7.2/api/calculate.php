@@ -17,8 +17,8 @@ $x_step = isset($matches[1]) ? (float)$matches[1] : 1.0;
 $y = $_POST['y'] * $variant;
 $z = $_POST['z'] / $variant;
 
-// Шлях до файлу у папці data
-$filePath = __DIR__ . '/../data/symovych.txt';
+// Шлях до файлу 
+$filePath = '/tmp/symovych.txt';
 $file = fopen($filePath, 'w');
 
 if (!$file) {
