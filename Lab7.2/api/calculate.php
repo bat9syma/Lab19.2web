@@ -9,50 +9,37 @@ $variant = (int)$_POST['variant'];
 $x_start = (float)$_POST['x_start'];
 $x_end = (float)$_POST['x_end'];
 
-// Читаємо конфіг
-$configPath = __DIR__ . '/../config/x_step.txt';
-if (!file_exists($configPath)) {
-    die("Configuration file not found.");
-}
-
-$config = file_get_contents($configPath);
+// Зчитування кроку
+$config = file_get_contents(__DIR__ . '/../config/x_step.txt');
 preg_match('/x_step\s*=\s*([\d.]+)/', $config, $matches);
 $x_step = isset($matches[1]) ? (float)$matches[1] : 1.0;
 
 $y = $_POST['y'] * $variant;
 $z = $_POST['z'] / $variant;
 
-// Шлях до файла в тимчасовій директорії
-$outputPath = '/tmp/symovych.txt';
-$file = fopen($outputPath, "w");
+// Шлях до файлу у папці data
+$filePath = __DIR__ . '/../data/symovych.txt';
+$file = fopen($filePath, 'w');
 
 if (!$file) {
-    die("❌ Cannot open file for writing");
+    echo "Cannot open file for writing at: $filePath";
+    exit;
 }
 
-$success = true; // прапорець успіху
+// Запис у файл
+fwrite($file, "Full name: $lastname $firstname\n");
+fwrite($file, "Group: $group\n");
+fwrite($file, "Variant: $variant\n");
+fwrite($file, "Y = $y, Z = $z\n");
+fwrite($file, "X_step = $x_step\n");
+fwrite($file, "\nX\tf(x,y,z)\n");
+fwrite($file, "-------------------\n");
 
-$success &= fwrite($file, "Full name: $lastname $firstname\n") !== false;
-$success &= fwrite($file, "Group: $group\n") !== false;
-$success &= fwrite($file, "Variant: $variant\n") !== false;
-$success &= fwrite($file, "Y = $y, Z = $z\n") !== false;
-$success &= fwrite($file, "X_step = $x_step\n") !== false;
-$success &= fwrite($file, "\nX\tf(x,y,z)\n") !== false;
-$success &= fwrite($file, "-------------------\n") !== false;
-
-// Табуляція
 for ($x = $x_start; $x <= $x_end; $x += $x_step) {
     $f = calculateExpression($x, $y, $z);
-    $line = "$x\t" . round($f, 4) . "\n";
-    $success &= fwrite($file, $line) !== false;
+    fwrite($file, "$x\t" . round($f, 4) . "\n");
 }
 
 fclose($file);
-
-// Повідомлення про результат
-if ($success) {
-    echo "Дані успішно записані у файл.";
-} else {
-    echo "Сталася помилка під час запису у файл.";
-}
-?>
+echo "Файл успішно записано за шляхом: data/symovych.txt";
+exit;
