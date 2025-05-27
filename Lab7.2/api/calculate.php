@@ -10,18 +10,17 @@ $variant = (int)$_POST['variant'];
 $x_start = (float)$_POST['x_start'];
 $x_end = (float)$_POST['x_end'];
 
-// Читаємо крок з файлу config/x_step.txt
+// Читаємо крок з файлу
 $configPath = __DIR__ . '/../config/x_step.txt';
 $config = file_get_contents($configPath);
 preg_match('/x_step\s*=\s*([\d.]+)/', $config, $matches);
 $x_step = isset($matches[1]) ? (float)$matches[1] : 1.0;
 
-// Обчислення Y і Z з урахуванням варіанту
 $y = $_POST['y'] * $variant;
 $z = $_POST['z'] / $variant;
 
-// Шлях до файлу результатів у корені проекту
-$outputPath = dirname(__DIR__) . '/symovych.txt';
+// Шлях до файлу результатів 
+$outputPath = dirname(__DIR__) . '/data/symovych.txt';
 
 $file = fopen($outputPath, "w");
 if (!$file) {
