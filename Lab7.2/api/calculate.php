@@ -1,5 +1,7 @@
 <?php
 session_start();
+
+echo 'PHP temp dir: ' . sys_get_temp_dir() . "<br>";
 require_once __DIR__ . '/../includes/fun.php';  
 
 // Забираємо дані з форми
