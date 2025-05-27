@@ -49,3 +49,4 @@ for ($x = $x_start; $x <= $x_end; $x += $x_step) {
 }
 
 fclose($file);
+echo "Файл успішно записано :)";
