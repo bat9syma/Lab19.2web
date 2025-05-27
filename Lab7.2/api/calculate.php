@@ -1,38 +1,33 @@
 <?php
 session_start();
+
+echo 'PHP temp dir: ' . sys_get_temp_dir() . "<br>";
+
 require_once __DIR__ . '/../includes/fun.php';
 
-// Зчитуємо дані з форми
-$lastname = $_POST['lastname'] ?? '';
-$firstname = $_POST['firstname'] ?? '';
-$group = $_POST['group'] ?? '';
-$variant = isset($_POST['variant']) ? (int)$_POST['variant'] : 1;
-$x_start = isset($_POST['x_start']) ? (float)$_POST['x_start'] : 0.0;
-$x_end = isset($_POST['x_end']) ? (float)$_POST['x_end'] : 0.0;
-$y = isset($_POST['y']) ? $_POST['y'] * $variant : 0;
-$z = isset($_POST['z']) ? $_POST['z'] / $variant : 0;
+$lastname = $_POST['lastname'];
+$firstname = $_POST['firstname'];
+$group = $_POST['group'];
+$variant = (int)$_POST['variant'];
+$x_start = (float)$_POST['x_start'];
+$x_end = (float)$_POST['x_end'];
 
-// Зчитування кроку з файлу config/x_step.txt
-$config_path = __DIR__ . '/../config/x_step.txt';
-$x_step = 1.0; // дефолтний крок
-if (file_exists($config_path)) {
-    $config = file_get_contents($config_path);
-    if (preg_match('/x_step\s*=\s*([\d.]+)/', $config, $matches)) {
-        $x_step = (float)$matches[1];
-    }
+// Зчитування кроку
+$config = file_get_contents(__DIR__ . '/../config/x_step.txt');
+preg_match('/x_step\s*=\s*([\d.]+)/', $config, $matches);
+$x_step = isset($matches[1]) ? (float)$matches[1] : 1.0;
+
+$y = $_POST['y'] * $variant;
+$z = $_POST['z'] / $variant;
+
+// Запис у тимчасовий файл
+$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . "symovych.txt";
+$file = fopen($tmpFile, "w");
+
+if ($file === false) {
+    die("Cannot open file for writing at: $tmpFile");
 }
 
-// Шлях для файлу на робочому столі Windows (заміни USERNAME на своє ім'я користувача)
-$userDesktopPath = 'C:\xampp\htdocs\Lab7.2\data';
-$file_path = $userDesktopPath . '/symovych.txt';
-
-// Відкриваємо файл для запису
-$file = fopen($file_path, 'w');
-if (!$file) {
-    die("Помилка: не вдалося відкрити файл для запису: $file_path");
-}
-
-// Записуємо інформацію
 fwrite($file, "Full name: $lastname $firstname\n");
 fwrite($file, "Group: $group\n");
 fwrite($file, "Variant: $variant\n");
@@ -49,19 +44,5 @@ for ($x = $x_start; $x <= $x_end; $x += $x_step) {
 
 fclose($file);
 
-?>
-
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8" />
-    <title>Результат обчислень</title>
-</head>
-<body>
-    <h2>Файл успішно записано :)</h2>
-    <p>Файл знаходиться тут: <strong><?php echo htmlspecialchars($file_path); ?></strong></p>
-    <form action="/results.php" method="get">
-        <button type="submit">Переглянути результат</button>
-    </form>
-</body>
-</html>
+echo "Файл успішно записано у тимчасову папку: $tmpFile";
+exit;
