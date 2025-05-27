@@ -1,5 +1,5 @@
 <?php
-$filePath = __DIR__ . '/../data/symovych.txt';
+$tmpPath = '/tmp/symovych.txt';
 
 if (file_exists($filePath)) {
     echo nl2br(htmlspecialchars(file_get_contents($filePath)));
