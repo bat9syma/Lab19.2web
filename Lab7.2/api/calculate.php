@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'includes/fun.php';
+require_once __DIR__ . '/../includes/fun.php';
 
 $lastname = $_POST['lastname'];
 $firstname = $_POST['firstname'];
