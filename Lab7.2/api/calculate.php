@@ -28,7 +28,6 @@ $z = $z_input / $variant;
 
 // Отримуємо тимчасову папку PHP
 $tempDir = sys_get_temp_dir();
-echo "Temp dir used by PHP: $tempDir<br>";
 
 // Формуємо повний шлях до файлу в тимчасовій папці
 $filepath = $tempDir . DIRECTORY_SEPARATOR . "symovych.txt";
