@@ -20,7 +20,7 @@ $y = $_POST['y'] * $variant;
 $z = $_POST['z'] / $variant;
 
 // Шлях до файлу результатів 
-$outputPath = __DIR__ . '/../data/symovych.txt';
+$outputPath = '/tmp/symovych.txt';
 
 $file = fopen($outputPath, "w");
 if (!$file) {
