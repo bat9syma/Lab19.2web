@@ -60,5 +60,5 @@ if (file_exists($filepath)) {
     echo "Помилка: файл не знайдено після запису :(";
 }
 
-echo "<a href='symovych.txt' download>         Завантажити файл</a>";
+echo "&nbsp;&nbsp;&nbsp;<a href='symovych.txt' download>Завантажити файл!</a>";
 exit;
