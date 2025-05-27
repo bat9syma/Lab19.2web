@@ -62,8 +62,4 @@ if (file_exists($filepath)) {
 } else {
     echo "Помилка: файл не знайдено після запису :(";
 }
-
-header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename="symovych.txt"');
-readfile($filename);
 exit;
