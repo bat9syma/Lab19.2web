@@ -61,4 +61,6 @@ if (file_exists($filepath)) {
 } else {
     echo "Помилка: файл не знайдено після запису :(";
 }
+
+echo "<a href='symovych.txt' download>Завантажити файл</a>";
 exit;
