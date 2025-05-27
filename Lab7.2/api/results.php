@@ -1,9 +1,9 @@
 <?php
-$tmpPath = __DIR__ . '/../data/symovych.txt';
+$filePath = '/tmp/symovych.txt';
+$file = fopen($filePath, 'w');
 
-if (file_exists($filePath)) {
-    echo nl2br(htmlspecialchars(file_get_contents($filePath)));
-} else {
-    echo "Results file not found :(";
+if (!$file) {
+    echo "❌ Cannot open file for writing at: $filePath";
+    exit;
 }
 ?>
