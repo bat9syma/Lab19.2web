@@ -1,4 +1,5 @@
 <?php
+// Шлях до файлу результатів у корені проекту
 $filePath = dirname(__DIR__) . '/symovych.txt';
 
 if (file_exists($filePath)) {
