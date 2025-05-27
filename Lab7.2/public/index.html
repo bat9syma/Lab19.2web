@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Tabulation form</title>
+</head>
+<body>
+  <h2>Tabulation form</h2>
+  <form action="/api/calculate.php" method="post">
+    <label>Surname:
+      <input type="text" name="lastname" value="Symovych" readonly>
+    </label><br><br>
+
+    <label>Name:
+      <input type="text" name="firstname" value="Sasha" readonly>
+    </label><br><br>
+
+    <label>Group:
+      <input type="text" name="group" required>
+    </label><br><br>
+
+    <label>Number of variant:
+      <input type="number" name="variant" min="1" required>
+    </label><br><br>
+
+    <label>X_start:
+      <input type="number" step="any" name="x_start" required>
+    </label><br><br>
+
+    <label>X_end:
+      <input type="number" step="any" name="x_end" required>
+    </label><br><br>
+
+    <label>Y:
+      <input type="number" name="y" required>
+    </label><br><br>
+
+    <label>Z:
+      <input type="number" name="z" required>
+    </label><br><br>
+
+    <input type="submit" value="Calculate">
+  </form>
+</body>
+</html>
